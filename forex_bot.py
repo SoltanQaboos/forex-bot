@@ -5,8 +5,8 @@ import os
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # توکن‌ها
-TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-AVALAI_API_KEY = os.getenv('OPENAI_API_KEY')  # کلید AvalAI رو اینجا می‌خونه
+TELEGRAM_TOKEN = os.getenv('8297444523:AAGB4xlzBxOJ4xCFt26khzRsNeMCmebkNVc')
+AVALAI_API_KEY = os.getenv('aa-T3FzjWoZXlBTytippDrTIgGla1gaCoYXtKtIdM1uVJk2wCmU')  # کلید AvalAI رو اینجا می‌خونه
 
 AVALAI_URL = "https://api.avalai.ir/v1/chat/completions"
 
