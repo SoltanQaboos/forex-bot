@@ -5,8 +5,8 @@ from openai import OpenAI
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # توکن‌ها از Environment Variables خوانده می‌شوند (برای Render)
-TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-AVALAI_API_KEY = os.getenv('AVALAI_API_KEY')
+TELEGRAM_TOKEN = os.getenv('8297444523:AAGB4xlzBxOJ4xCFt26khzRsNeMCmebkNVc')
+AVALAI_API_KEY = os.getenv('aa-T3FzjWoZXlBTytippDrTIgGla1gaCoYXtKtIdM1uVJk2wCmU')
 
 # اتصال به AvalAI
 client = OpenAI(
