@@ -1,18 +1,14 @@
 import telebot
+import requests
 import base64
 import os
-from openai import OpenAI
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # توکن‌ها
-TELEGRAM_TOKEN = os.getenv('8297444523:AAGB4xlzBxOJ4xCFt26khzRsNeMCmebkNVc')
-OPENAI_API_KEY = os.getenv('aa-T3FzjWoZXlBTytippDrTIgGla1gaCoYXtKtIdM1uVJk2wCmU')
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+AVALAI_API_KEY = os.getenv('OPENAI_API_KEY')  # همون کلید AvalAI
 
-# اتصال به AvalAI - این نسخه با 1.35.10 کاملاً کار می‌کنه
-client = OpenAI(
-    api_key=OPENAI_API_KEY,
-    base_url="https://api.avalai.ir/v1"
-)
+AVALAI_URL = "https://api.avalai.ir/v1/chat/completions"
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
@@ -24,7 +20,7 @@ def start(message):
     markup.add(InlineKeyboardButton("کانال سیگنال 🚀", url="https://t.me/+LINK_KANALE_SHOMA"))
     bot.send_message(message.chat.id,
                      "سلام! بات تحلیل چارت فارکس با GPT-4o Vision 🔥\n"
-                     "عکس چارت بفرست تا تحلیل حرفه‌ای بدم!",
+                     "عکس چارت از TradingView بفرست تا تحلیل حرفه‌ای بدم!",
                      reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -41,9 +37,14 @@ def handle_photo(message):
     photo_bytes = bot.download_file(file_info.file_path)
     base64_image = base64.b64encode(photo_bytes).decode('utf-8')
     
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[{
+    headers = {
+        "Authorization": f"Bearer {AVALAI_KEY}",
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "model": "gpt-4o",
+        "messages": [{
             "role": "user",
             "content": [
                 {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}},
@@ -55,14 +56,17 @@ def handle_photo(message):
 • سیگنال خرید/فروش + احتمال
 • استاپ و تارگت
 • سناریو کوتاه/میان‌مدت
-فقط تحلیل، بدون مقدمه."""}
+فقط تحلیل بده، بدون مقدمه.""")}
             ]
         }],
-        max_tokens=1000
-    )
-    bot.reply_to(message, response.choices[0].message.content)
+        "max_tokens": 1000
+    }
+    
+    response = requests.post(AVALAI_URL, headers=headers, json=payload).json()
+    text = response["choices"][0]["message"]["content"]
+    bot.reply_to(message, text)
 
-# متن ساده
+# اگر متن فرستاد
 @bot.message_handler(func=lambda m: True)
 def handle_text(message):
     bot.reply_to(message, "عکس چارت بفرست تا تحلیل دقیق بدم! 📸")
